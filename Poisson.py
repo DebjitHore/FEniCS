@@ -1,6 +1,6 @@
 from fenics import *
 import fenics as fe
-import matplotlib.pyplot as plt
+
 from vedo.dolfin import plot
 
 
@@ -8,11 +8,11 @@ from vedo.dolfin import plot
 #Mesh and Function Space
 
 mesh= UnitSquareMesh(8,8)
-V= FunctionSpace(mesh, 'Lagrange', 1)
+V= FunctionSpace(mesh, 'Lagrange', 2)
 
 # Boundary Condition
 
-u_D = Expression('1+x[0]*x[0]+2*x[1]*x[1]', degree=2)
+u_D = Expression('1+x[0]*x[0]+2*x[1]*x[1]', degree=1)
 
 def on_boundary(x, on_boundary):
     return on_boundary
@@ -34,17 +34,16 @@ solve(a==L, u, bc)
 
 
 #plot solution and mesh
-plt.plot()
+
 plot(u, mode='color', vmin=1, vmax=4, style =1)
 
-plt.show()
 
 
 error_L2= errornorm(u_D, u, 'L2')
 
 vertex_values_uD= u_D.compute_vertex_values(mesh)
 vertex_values_u = u.compute_vertex_values(mesh)
-
+print(vertex_values_u, vertex_values_uD)
 import numpy as np
 error_max = np.max(np.abs(vertex_values_uD-vertex_values_u))
 
